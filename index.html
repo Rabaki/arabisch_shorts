@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deutsch Arabisch Lernen</title>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column; /* Erlaubt die Anordnung von Editor oben und Buch unten */
+            align-items: center;
+            background: radial-gradient(circle, #58756b, #1b2925);
+            box-sizing: border-box;
+            padding: 20px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        /* --- EDITOR BEREICH GANZ OBEN (OHNE BUTTON) --- */
+        .editor-panel {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 20;
+        }
+
+        .editor-panel textarea {
+            flex: 1;
+            height: 80px;
+            border-radius: 8px;
+            border: 1px solid #c49a55;
+            background: #24543a;
+            color: #fff9e9;
+            padding: 10px;
+            font-size: 14px;
+            resize: none;
+            font-family: sans-serif;
+        }
+
+        .editor-panel textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .editor-panel textarea.input-arabic {
+            direction: rtl;
+            font-family: "Amiri", serif;
+            font-size: 16px;
+        }
+
+        /* --- OPTIMIERTER RAHMEN FÜR SCREENSHOTS --- */
+        .rahmen {
+            border-top: 2px solid gainsboro;
+            border-bottom: 2px solid gainsboro;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding-top: 200px;
+            padding-bottom: 200px;
+            /* Gleichmäßiger Abstand zum Abschneiden */
+            background: transparent;
+        }
+
+        /* Bühne */
+        .scene {
+            perspective: 1800px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        /* Buch-Layout */
+        .book {
+            width: 100%;
+            height: 300px;
+            display: flex;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, .45);
+            border: 2px solid #c49a55;
+        }
+
+        /* Einband (links und rechts) */
+        .cover {
+            width: 35px;
+            background: linear-gradient(90deg, #102b20, #24543a, #477b52, #24543a, #102b20);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, .85);
+        }
+
+        /* Seiten */
+        .page {
+            flex: 1;
+            position: relative;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(90deg, #e5d2aa, #fff9e9, #e5d2aa);
+            box-shadow: inset 0 0 55px rgba(100, 70, 30, .18);
+        }
+
+        /* Moderne Pflanzen-Dekoration */
+        .page::before,
+        .page::after {
+            content: "";
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background:
+                radial-gradient(ellipse at 30% 30%, #7fa66a 0%, #7fa66a 18%, transparent 20%),
+                radial-gradient(ellipse at 60% 45%, #9bc47d 0%, #9bc47d 16%, transparent 18%),
+                radial-gradient(ellipse at 35% 70%, #527c52 0%, #527c52 14%, transparent 16%);
+            filter: blur(.2px);
+            opacity: .4;
+        }
+
+        .left-page::before {
+            top: 25px;
+            left: 25px;
+            transform: rotate(-25deg);
+        }
+
+        .right-page::before {
+            top: 25px;
+            right: 25px;
+            transform: rotate(25deg);
+        }
+
+        .left-page::after {
+            bottom: 25px;
+            left: 25px;
+            transform: rotate(155deg);
+        }
+
+        .right-page::after {
+            bottom: 25px;
+            right: 25px;
+            transform: rotate(-155deg);
+        }
+
+        /* Text Deutsch */
+        .german {
+            font-family: Georgia, serif;
+            font-size: 32px;
+            line-height: 1.7;
+            color: #3b3028;
+            text-align: center;
+            margin: 0;
+        }
+
+        /* Text Arabisch */
+        .arabic {
+            direction: rtl;
+            text-align: center;
+            font-family: "Amiri", serif;
+            font-size: 36px;
+            line-height: 1.9;
+            color: #3b3028;
+            margin: 0;
+        }
+
+        /* Buchfalz (Mitte) */
+        .spine {
+            width: 30px;
+            background: linear-gradient(90deg, #3b2917, #c49a55, #3b2917);
+        }
+
+        /* --- CONTAINER UNTEREINANDER --- */
+        .social-container {
+            width: 100%;
+            margin-top: 25px;
+            display: block;
+            flex-direction: column;
+            align-items: flex-start;
+            /* Schön linksbündig unter dem Buch */
+            gap: 15px;
+            z-index: 10;
+            padding-left: 5px;
+        }
+
+        /* Feste Breite für Symmetrie */
+        .social-badge {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            height: 56px;
+            width: 320px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Icon-Bereich */
+        .icon-wrapper {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .social-badge svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        /* Profilbild */
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-left: 4px;
+            flex-shrink: 0;
+            border: 2px solid transparent;
+        }
+
+        /* Text-Bereich */
+        .text-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-left: 12px;
+            margin-right: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .channel-name {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* Info-Zeile */
+        .cta-text {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 1px;
+        }
+
+        .icon-tiktok .cta-text {
+            color: #00f2fe;
+        }
+
+        .icon-youtube .cta-text {
+            color: #ff3333;
+        }
+
+        /* Hover-Effekt */
+        .social-badge:hover {
+            transform: translateY(-2px) translateX(3px);
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        /* TikTok Branding */
+        .icon-tiktok svg {
+            fill: #ffffff;
+            filter: drop-shadow(-1.5px -1.5px 0px #00f2fe) drop-shadow(1.5px 1.5px 0px #fe0979);
+        }
+
+        .icon-tiktok .profile-img {
+            border-color: #fe0979;
+        }
+
+        /* YouTube Branding */
+        .icon-youtube svg {
+            fill: #FF0000;
+            filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15));
+        }
+
+        .icon-youtube .profile-img {
+            border-color: #FF0000;
+        }
+
+
+        /* --- SMARTPHONE OPTIMIERUNG --- */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .editor-panel {
+                padding: 12px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .editor-panel textarea {
+                height: 60px;
+                width: 100%;
+            }
+
+            .rahmen {
+                padding-top: 110px;
+                padding-bottom: 60px;
+            }
+
+            .book {
+                flex-direction: row;
+                height: 260px;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .cover {
+                width: 15px;
+            }
+
+            .spine {
+                width: 12px;
+            }
+
+            .page {
+                padding: 10px 5px;
+            }
+
+            .german {
+                font-size: 14px;
+                line-height: 1.4;
+            }
+
+            .arabic {
+                font-size: 16px;
+                line-height: 1.5;
+            }
+
+            .page::before,
+            .page::after {
+                width: 40px;
+                height: 40px;
+                opacity: 0.2;
+            }
+
+            .social-container {
+                margin-top: 20px;
+                align-items: center;
+                /* Auf Handys mittig unter dem Buch */
+            }
+
+            .social-badge {
+                height: 48px;
+                border-radius: 24px;
+                width: 100%;
+                max-width: 280px;
+                margin-bottom: 10px;
+            }
+
+            .icon-wrapper {
+                width: 48px;
+                height: 48px;
+            }
+
+            .social-badge svg {
+                width: 22px;
+                height: 22px;
+            }
+
+            .profile-img {
+                width: 34px;
+                height: 34px;
+            }
+
+            .channel-name {
+                font-size: 13px;
+            }
+
+            .cta-text {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Editor Bedienfeld (Reine Textareas, die live synchronisieren) -->
+    <div class="editor-panel">
+        <textarea id="txtGerman" placeholder="Deutschen Text hier eingeben...">Ich lerne Deutsch, weil ich in Deutschland leben möchte.</textarea>
+        <textarea id="txtArabic" class="input-arabic" placeholder="...أدخل النص العربي هنا">أنا أتعلم اللغة الألمانية، لأنني أريد أن أعيش في ألمانيا.</textarea>
+    </div>
+
+    <!-- Die Rahmen-Box hält alles perfekt zusammen -->
+    <div class="rahmen">
+
+        <!-- Buch-Szene -->
+        <div class="scene">
+            <div class="book">
+
+                <!-- Linker Einband -->
+                <div class="cover"></div>
+
+                <!-- Deutsche Seite -->
+                <div class="page left-page">
+                    <p class="german" id="bookGerman">
+                        Ich lerne Deutsch, weil ich in Deutschland leben möchte.
+                    </p>
+                </div>
+
+                <!-- Mitte (Falz) -->
+                <div class="spine"></div>
+
+                <!-- Arabische Seite -->
+                <div class="page right-page">
+                    <p class="arabic" id="bookArabic">
+                        أنا أتعلم اللغة الألمانية، لأنني أريد أن أعيش في ألمانيا.
+                    </p>
+                </div>
+
+                <!-- Rechter Einband -->
+                <div class="cover"></div>
+
+            </div>
+        </div>
+
+        <!-- Social Badges -->
+        <div class="social-container">
+
+            <!-- TikTok Badge -->
+            <a href="DEIN_TIKTOK_LINK_HIER" class="social-badge icon-tiktok" title="Jetzt auf TikTok abonnieren"
+                target="_blank">
+                <div class="icon-wrapper">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.61 4.17 1.14 1.25 2.75 1.99 4.41 2.17v3.8c-1.7-.02-3.37-.53-4.78-1.48-.19-.13-.38-.27-.55-.42v6.62c.03 3.53-2.22 6.84-5.65 7.63-3.69.93-7.58-1.12-8.79-4.68-1.3-3.6.45-7.75 4.04-8.87.97-.32 1.99-.4 3-.24v3.9c-.83-.19-1.71-.06-2.45.36-1.16.63-1.8 1.95-1.53 3.25.33 1.48 1.77 2.48 3.27 2.22 1.43-.19 2.43-1.42 2.43-2.85V0h.23z" />
+                    </svg>
+                </div>
+                <img class="profile-img" src="tiktok-logo.jpeg" alt="TikTok Profilbild">
+                <div class="text-wrapper">
+                    <span class="channel-name">Deutsch in Sekunden</span>
+                    <span class="cta-text">Nichts verpassen!</span>
+                </div>
+            </a>
+
+            <!-- YouTube Badge -->
+            <a href="DEIN_YOUTUBE_LINK_HIER" class="social-badge icon-youtube" title="YouTube Kanal" target="_blank">
+                <div class="icon-wrapper">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.516 0-9.387.507a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.503 5.837a3.003 3.003 0 0 0 2.11 2.11c1.871.507 9.387.507 9.387.507s7.517 0 9.387-.507a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                    </svg>
+                </div>
+                <img class="profile-img" src="dein-logo.png" alt="YouTube Profilbild">
+                <div class="text-wrapper">
+                    <span class="channel-name">MATHE_UND_DEUTSCH</span>
+                    <span class="cta-text">Ausführlich lernen!</span>
+                </div>
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- JavaScript für die automatische Live-Übertragung -->
+    <script>
+        const txtGerman = document.getElementById('txtGerman');
+        const txtArabic = document.getElementById('txtArabic');
+        const bookGerman = document.getElementById('bookGerman');
+        const bookArabic = document.getElementById('bookArabic');
+
+        function updateBookText() {
+            // Falls das Feld komplett leer ist, bleibt ein Leerzeichen stehen, damit das Layout nicht kollabiert
+            bookGerman.textContent = txtGerman.value || " ";
+            bookArabic.textContent = txtArabic.value || " ";
+        }
+
+        // Event-Listener reagieren sofort bei jeder Eingabe (Tippen, Einfügen, Löschen)
+        txtGerman.addEventListener('input', updateBookText);
+        txtArabic.addEventListener('input', updateBookText);
+    </script>
+
+</body>
+
+</html>
