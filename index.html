@@ -11,7 +11,8 @@
             margin: 0;
             min-height: 100vh;
             display: flex;
-            flex-direction: column; /* Erlaubt die Anordnung von Editor oben und Buch unten */
+            flex-direction: column;
+            /* Erlaubt die Anordnung von Editor oben und Buch unten */
             align-items: center;
             background: radial-gradient(circle, #58756b, #1b2925);
             box-sizing: border-box;
@@ -31,8 +32,8 @@
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 10px;
+            margin-bottom: 10px;
             display: flex;
             gap: 15px;
             z-index: 20;
@@ -40,15 +41,16 @@
 
         .editor-panel textarea {
             flex: 1;
-            height: 80px;
+            height: 20px;
             border-radius: 8px;
             border: 1px solid #c49a55;
             background: #24543a;
             color: #fff9e9;
-            padding: 10px;
+            padding: 5px;
             font-size: 14px;
             resize: none;
             font-family: sans-serif;
+            justify-content: center;
         }
 
         .editor-panel textarea::placeholder {
@@ -303,13 +305,13 @@
             }
 
             .editor-panel {
-                padding: 12px;
+                padding: 5px;
                 flex-direction: column;
                 gap: 10px;
             }
 
             .editor-panel textarea {
-                height: 60px;
+                height: 10px;
                 width: 100%;
             }
 
@@ -398,8 +400,8 @@
 
     <!-- Editor Bedienfeld (Reine Textareas, die live synchronisieren) -->
     <div class="editor-panel">
-        <textarea id="txtGerman" placeholder="Deutschen Text hier eingeben...">Ich lerne Deutsch, weil ich in Deutschland leben möchte.</textarea>
-        <textarea id="txtArabic" class="input-arabic" placeholder="...أدخل النص العربي هنا">أنا أتعلم اللغة الألمانية، لأنني أريد أن أعيش في ألمانيا.</textarea>
+        <textarea id="txtGerman" placeholder="Deutschen Text hier eingeben..."></textarea>
+        <textarea id="txtArabic" class="input-arabic" placeholder="...أدخل النص العربي هنا"></textarea>
     </div>
 
     <!-- Die Rahmen-Box hält alles perfekt zusammen -->
@@ -415,7 +417,6 @@
                 <!-- Deutsche Seite -->
                 <div class="page left-page">
                     <p class="german" id="bookGerman">
-                        Ich lerne Deutsch, weil ich in Deutschland leben möchte.
                     </p>
                 </div>
 
@@ -425,7 +426,6 @@
                 <!-- Arabische Seite -->
                 <div class="page right-page">
                     <p class="arabic" id="bookArabic">
-                        أنا أتعلم اللغة الألمانية، لأنني أريد أن أعيش في ألمانيا.
                     </p>
                 </div>
 
